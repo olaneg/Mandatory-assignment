@@ -7,7 +7,7 @@
 **Student Number:** 421967
 
 ## Description
-The program simulates a fitness centres wearable-device pipeline. It uses the instructor supplied data_generator.py to produce a participant profile and a list of raw sensor observations for five scenarios. The program validates each observation, groups the valid ones into a training session, compares the session against the participants personal baseline, classifies the sessions intensity, and detects whether the participant is recovering toward the end of the session. The result is printed as a console report for each scenario. 
+The program simulates a fitness centres wearable-device pipeline. It uses data_generator.py to produce a participant profile and a list of raw sensor observations for five scenarios. The program validates each observation, groups the valid ones into a training session, compares the session against the participants personal baseline, classifies the sessions intensity, and detects whether the participant is recovering toward the end of the session. The result is printed as a console report for each scenario. 
 
 ## Class design 
 | Class | Responsibility |
@@ -67,3 +67,8 @@ Participant: P005
 Usable observations: 0 / 12
 Classification: insufficient data
 Explanation: Only 0 usable observation(s); need at least 3.
+
+## Known limitations
+- Classification thresholds (e.g. the 0.25/0.70 activity level cutoffs) are fixed constans tuned to this generators output distribution, rather than configurable or learned from data. 
+- Recovery detection uses a simple thirds-based heurisitc (comparing mean values of the middle and final third of a session) rather than a more precise trend or slope analysis.
+- The analyzer assumes observations are already ordered by timestamp, as produced by the generator. 

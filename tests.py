@@ -1,12 +1,10 @@
 import unittest
-
+from data_generator import generate_fitness_data
+from sample_data import SCENARIOS
 from main import (
     Observation, Participant, Session, SessionAnalyzer,
     validate_observation, summarize, compare_to_reference, detect_recovery,
 )
-from data_generator import generate_fitness_data
-from sample_data import SCENARIOS
-
 
 class TestValidation(unittest.TestCase):
 

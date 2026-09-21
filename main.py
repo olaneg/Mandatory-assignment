@@ -25,6 +25,7 @@ def validate_observation(data):
             reasons.append(f"missing field: {field}")
 
     if reasons:
+        # Something is missing, no point in checking values
         return {"valid": False, "reasons": reasons}
 
     if not (35 <= data["heart_rate"] <= 205):
@@ -46,6 +47,7 @@ def validate_observation(data):
 
 def summarize(values):
     if not values:
+        # Empty list would crash statistics.mean, so returns 0
         return {"average": 0.0, "minimum": 0.0, "maximum": 0.0}
     return {
         "average": round(statistics.mean(values), 2),
@@ -55,6 +57,7 @@ def summarize(values):
 
 
 def compare_to_reference(value, reference, tolerance=0.15):
+    # Percentage difference, not raw difference, 10bpm means more for a low resting heart rate than high.
     if reference == 0:
         return "within"
     diff_ratio = (value - reference) / reference
@@ -87,6 +90,7 @@ class Observation:
         self.activity_level = activity_level
         self.signal_quality = signal_quality
 
+        # Checks validation when the object is created
         validation = validate_observation(self.as_dict())
         self._valid = validation["valid"]
         self._reasons = validation["reasons"]
@@ -121,6 +125,7 @@ class Participant:
 
     @property
     def baseline(self):
+        # Returns a copy so nobody can mess with the real values
         return dict(self._baseline)
 
     @classmethod
@@ -134,6 +139,7 @@ class Participant:
 
 class Session:
     def __init__(self, participant, raw_observations):
+        # A session is made up from participants + observations
         self.participant = participant
         self.observations = [
             Observation(
@@ -183,7 +189,7 @@ class SessionAnalyzer:
         hr_vs_baseline = compare_to_reference(hr_summary["average"], baseline["baseline_heart_rate"])
 
         recovery = detect_recovery(heart_rates, activity_levels)
-
+        # Checks recovery first a cooling session can look moderate on average, but its the downward trend that counts
         if recovery:
             classification = "recovering"
             explanation = "Heart rate and activity level both declined near the end of the session."
